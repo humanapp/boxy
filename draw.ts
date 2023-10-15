@@ -1,4 +1,4 @@
-namespace boxy {
+namespace boxy.draw {
 
     /**
      * Draw a rectangle.
@@ -14,7 +14,7 @@ namespace boxy {
         width?: number | VecLike,
         height?: number
     ): Collision {
-        return drawRect(false, x, y, width, height);
+        return drawRect(false, false, x, y, width, height);
     }
 
     /**
@@ -31,7 +31,7 @@ namespace boxy {
         width?: number | VecLike,
         height?: number
     ): Collision {
-        return drawRect(true, x, y, width, height);
+        return drawRect(true, true, x, y, width, height);
     }
 
     /**
@@ -77,9 +77,9 @@ namespace boxy {
     export function line(
         x1: number | VecLike,
         y1: number | VecLike,
-        x2: number | VecLike = 3,
-        y2: number = 3,
-        thickness: number = 3
+        x2: number | VecLike = 6,
+        y2: number = 6,
+        thickness: number = 6
     ): Collision {
         const p = new Vec();
         const p2 = new Vec();
@@ -191,6 +191,7 @@ namespace boxy {
 
     function drawRect(
         isAlignCenter: boolean,
+        fill: boolean,
         x: number | VecLike,
         y: number | VecLike,
         width?: number | VecLike,
@@ -200,12 +201,12 @@ namespace boxy {
             if (typeof y === "number") {
                 if (typeof width === "number") {
                     if (height == null) {
-                        return addRect(isAlignCenter, x, y, width, width);
+                        return addRect(isAlignCenter, fill, x, y, width, width);
                     } else {
-                        return addRect(isAlignCenter, x, y, width, height);
+                        return addRect(isAlignCenter, fill, x, y, width, height);
                     }
                 } else {
-                    return addRect(isAlignCenter, x, y, width.x, width.y);
+                    return addRect(isAlignCenter, fill, x, y, width.x, width.y);
                 }
             } else {
                 throw "invalid params";
@@ -213,14 +214,14 @@ namespace boxy {
         } else {
             if (typeof y === "number") {
                 if (width == null) {
-                    return addRect(isAlignCenter, x.x, x.y, y, y);
+                    return addRect(isAlignCenter, fill, x.x, x.y, y, y);
                 } else if (typeof width === "number") {
-                    return addRect(isAlignCenter, x.x, x.y, y, width);
+                    return addRect(isAlignCenter, fill, x.x, x.y, y, width);
                 } else {
                     throw "invalid params";
                 }
             } else {
-                return addRect(isAlignCenter, x.x, x.y, y.x, y.y);
+                return addRect(isAlignCenter, fill, x.x, x.y, y.x, y.y);
             }
         }
     }
@@ -232,7 +233,7 @@ namespace boxy {
         isAddingToTmp = false
     ): Collision {
         if (view.getCurrentColor() !== Color.Transparent) {
-            view.drawLine(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+            render.line(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
         }
         const t = Math.floor(clamp(thickness, 3, 10));
         const lx = Math.abs(l.x);
@@ -241,7 +242,7 @@ namespace boxy {
         l.div(rn - 1);
         let collision: Collision = { rect: {} };
         for (let i = 0; i < rn; i++) {
-            const c = addRect(true, p.x, p.y, thickness, thickness, true);
+            const c = addRect(true, true, p.x, p.y, thickness, thickness, true);
             collision = {
                 rect: merge(collision.rect, c.rect, AllColors)
             };
@@ -255,6 +256,7 @@ namespace boxy {
 
     function addRect(
         isAlignCenter: boolean,
+        fill: boolean,
         x: number,
         y: number,
         width: number,
@@ -263,9 +265,9 @@ namespace boxy {
     ): Collision {
         if (view.getCurrentColor() !== Color.Transparent) {
             if (isAlignCenter) {
-                view.fillRect(x - width / 2, y - height / 2, width, height);
+                render.rect(x - width / 2, y - height / 2, width, height);
             } else {
-                view.fillRect(x, y, width, height);
+                render.rect(x, y, width, height);
             }
         }
         let pos = isAlignCenter
@@ -288,7 +290,7 @@ namespace boxy {
         const collision = boxy.collision.checkHitboxes(box);
         if (view.getCurrentColor() !== Color.Transparent) {
             isAddingToTmp ? boxy.collision.queueHitbox(box) : boxy.collision.addHitbox(box);
-            view.fillRect(pos.x, pos.y, size.x, size.y);
+            fill ? render.box(pos.x, pos.y, size.x, size.y) : render.rect(pos.x, pos.y, size.x, size.y);
         }
         return collision;
     }

@@ -6,10 +6,15 @@ namespace boxy {
     }
 
     export function isVecLike(v: any): boolean {
-        return v.x !== null && v.y !== null;
+        if (typeof v !== "object") return false;
+        return v["x"] != null && v["y"] != null;
     }
 
-    export class Vec {
+    export function vec(x?: number | VecLike, y?: number): Vec {
+        return new Vec(x, y);
+    }
+
+    export class Vec implements VecLike {
         x = 0;
         y = 0;
         

@@ -1,6 +1,9 @@
 namespace boxy.view {
 
-    let colorStack: Color[] = [Color.Red];
+    export const width = screen.width;
+    export const height = screen.height;
+
+    const colorStack: Color[] = [Color.Red];
 
     export function pushCurrentColor(color: Color) {
         colorStack.push(color);
@@ -21,21 +24,8 @@ namespace boxy.view {
         return colorStack[colorStack.length - 1];
     }
 
-    export function fillRect(x: number, y: number, width: number, height: number) {
-        screen.drawRect(x, y, width, height, getCurrentColor());
+    export function setBackgroundColor(color: Color) {
+        scene.setBackgroundColor(color);
     }
 
-    export function drawLine(x1: number, y1: number, x2: number, y2: number, thickness: number) {
-        screen.drawLine(x1, y1, x2, y2, getCurrentColor() /*, thickness */);
-    }
-
-    export function _update() {
-        screen.drawLine(
-            game.random.getInt(0, 180),
-            game.random.getInt(0, 160),
-            game.random.getInt(0, 180),
-            game.random.getInt(0, 160),
-            getCurrentColor());
-
-    }
 }

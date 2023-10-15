@@ -29,4 +29,24 @@ namespace boxy {
         });
 
     }
+
+    export function remove<T>(
+        array: T[],
+        func: (v: T, index?: number) => any
+    ): T[] {
+        let removed = [];
+        for (let i = 0, index = 0; i < array.length; index++) {
+            if (func(array[i], index)) {
+                removed.push(array[i]);
+                array.splice(i, 1);
+            } else {
+                i++;
+            }
+        }
+        return removed;
+    }
+
+    export function rnd(lowOrHigh: number = 1, high?: number) {
+        return random.get(lowOrHigh, high);
+    }
 }

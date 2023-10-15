@@ -19,7 +19,8 @@
         "images.g.ts",
         "view.ts",
         "input.ts",
-        "game.ts"
+        "game.ts",
+        "render.ts"
     ],
     "testFiles": [
         "test.ts"

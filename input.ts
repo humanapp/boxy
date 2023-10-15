@@ -39,5 +39,8 @@ namespace boxy.input {
         updateKey(Down, controller.down);
         updateKey(Left, controller.left);
         updateKey(Right, controller.right);
+        isPressed = A.isPressed || B.isPressed || Up.isPressed || Down.isPressed || Left.isPressed || Right.isPressed;
+        justPressed = A.justPressed || B.justPressed || Up.justPressed || Down.justPressed || Left.justPressed || Right.justPressed;
+        justReleased = A.justReleased || B.justReleased || Up.justReleased || Down.justReleased || Left.justReleased || Right.justReleased;
     }
 }
