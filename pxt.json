@@ -1,0 +1,35 @@
+{
+    "name": "boxy",
+    "description": "",
+    "dependencies": {
+        "device": "*"
+    },
+    "files": [
+        "main.ts",
+        "README.md",
+        "assets.json",
+        "vec.ts",
+        "util.ts",
+        "draw.ts",
+        "collision.ts",
+        "random.ts",
+        "particle.ts",
+        "color.ts",
+        "images.g.jres",
+        "images.g.ts",
+        "view.ts",
+        "input.ts",
+        "game.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "1.12.41",
+        "targetId": "arcade"
+    },
+    "supportedTargets": [
+        "arcade"
+    ],
+    "preferredEditor": "tsprj"
+}
