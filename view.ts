@@ -1,4 +1,4 @@
-namespace boxy.view {
+namespace boxy {
 
     export const width = screen.width;
     export const height = screen.height;

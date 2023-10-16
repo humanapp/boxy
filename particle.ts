@@ -26,7 +26,7 @@ namespace boxy {
             }
             count = 1;
         }
-        const color = view.getCurrentColor();
+        const color = getCurrentColor();
         for (let i = 0; i < count; i++) {
             const a = angle + random.get(angleWidth) - angleWidth / 2;
             const p: Particle = {
@@ -40,7 +40,7 @@ namespace boxy {
     }
 
     export function update() {
-        const color = view.getCurrentColor();
+        const color = getCurrentColor();
         particles = particles.filter((p) => {
             p.ticks--;
             if (p.ticks < 0) {
@@ -48,10 +48,10 @@ namespace boxy {
             }
             p.pos.add(p.vel);
             p.vel.mul(0.98);
-            view.setCurrentColor(p.color);
+            setCurrentColor(p.color);
             render.rect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
             return true;
         });
-        view.setCurrentColor(color);
+        setCurrentColor(color);
     }
 }

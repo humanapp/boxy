@@ -205,7 +205,7 @@ namespace boxy.draw {
         let collision = boxy.collision.emptyCollision();
 
         opts = opts || {};
-        opts.color = opts.color != null ? opts.color : view.getCurrentColor();
+        opts.color = opts.color != null ? opts.color : getCurrentColor();
         opts.backgroundColor = opts.backgroundColor || Color.Transparent;
         opts.collidable = false;
         opts.scale = opts.scale || vec(1, 1);
@@ -245,15 +245,15 @@ namespace boxy.draw {
                         const index = w + h * (font6.charHeight + 1);
                         const elem = glyph.charAt(index);
                         if (elem === '#') {
-                            view.pushCurrentColor(opts.color);
+                            pushCurrentColor(opts.color);
                             const x = pos.x + w * opts.scale.x;
                             addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
-                            view.popCurrentColor();
+                            popCurrentColor();
                         } else {
-                            view.pushCurrentColor(opts.backgroundColor);
+                            pushCurrentColor(opts.backgroundColor);
                             const x = pos.x + w * opts.scale.x;
                             addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
-                            view.popCurrentColor();
+                            popCurrentColor();
                         }
                     }
                 }
@@ -310,7 +310,7 @@ namespace boxy.draw {
         collidable: boolean,
         isAddingToTmp = false
     ): Collision {
-        if (view.getCurrentColor() !== Color.Transparent) {
+        if (getCurrentColor() !== Color.Transparent) {
             render.line(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
         }
         const t = Math.floor(clamp(thickness, 3, 10));
@@ -342,7 +342,7 @@ namespace boxy.draw {
         height: number,
         isAddingToTmp = false
     ): Collision {
-        if (view.getCurrentColor() !== Color.Transparent) {
+        if (getCurrentColor() !== Color.Transparent) {
             if (isAlignCenter) {
                 render.rect(x - width / 2, y - height / 2, width, height);
             } else {
@@ -366,10 +366,10 @@ namespace boxy.draw {
         }
         const box: HitBox = { pos, size, collision: boxy.collision.emptyCollision() };
         if (collidable) {
-            box.collision.collidingWith.rect[view.getCurrentColor()] = true;
+            box.collision.collidingWith.rect[getCurrentColor()] = true;
         }
         const collision = boxy.collision.checkHitboxes(box);
-        if (view.getCurrentColor() !== Color.Transparent) {
+        if (getCurrentColor() !== Color.Transparent) {
             isAddingToTmp ? boxy.collision.queueHitbox(box) : boxy.collision.addHitbox(box);
             fill ? render.box(pos.x, pos.y, size.x, size.y) : render.rect(pos.x, pos.y, size.x, size.y);
         }

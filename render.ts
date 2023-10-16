@@ -38,7 +38,7 @@ namespace boxy.render {
     function makeDrawRect(x: number, y: number, width: number, height: number): DrawRectCommand {
         return {
             type: DrawCommandType.DrawRect,
-            color: view.getCurrentColor(),
+            color: getCurrentColor(),
             x, y, width, height,
         };
     }
@@ -46,7 +46,7 @@ namespace boxy.render {
     function makeDrawBox(x: number, y: number, width: number, height: number): DrawBoxCommand {
         return {
             type: DrawCommandType.DrawBox,
-            color: view.getCurrentColor(),
+            color: getCurrentColor(),
             x, y, width, height,
         };
     }
@@ -54,7 +54,7 @@ namespace boxy.render {
     function makeDrawLine(x1: number, y1: number, x2: number, y2: number, thickness: number): DrawLineCommand {
         return {
             type: DrawCommandType.DrawLine,
-            color: view.getCurrentColor(),
+            color: getCurrentColor(),
             x1, y1, x2, y2,
             thickness,
         };

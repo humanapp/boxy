@@ -20,6 +20,21 @@ namespace boxy {
 
 /* BOX CLIMB */
 
+const opts: boxy.GameOptions = {
+    titleText: "BOX CLIMB",
+    titleTextOpts: {
+        color: boxy.Color.DarkBlue
+    },
+    titleBlinkText: "press any key",
+    titleBlinkTextOpts: {
+        color: boxy.Color.DarkBlue
+    },
+    gameOverText: "GAME OVER",
+    gameOverOpts: {
+        color: boxy.Color.Red
+    }
+}
+
 interface Cord { angle: number, length: number, box: boxy.Vec };
 
 let boxes: boxy.Vec[];
@@ -32,8 +47,8 @@ boxy.onUpdate(() => {
     if (!boxy.tick) {
         boxes = [boxy.vec(50, 8)];
         nextBoxDist = 5;
-        boxy.view.setBackgroundColor(boxy.Color.White);
-        boxy.view.setCurrentColor(boxy.Color.Black);
+        boxy.setBackgroundColor(boxy.Color.White);
+        boxy.setCurrentColor(boxy.Color.Black);
         cord = { angle: 0, length: cordLength, box: boxes[0] };
     }
 
@@ -50,10 +65,8 @@ boxy.onUpdate(() => {
         }
         cord.angle += boxy.difficulty * 0.05;
         boxy.draw.line(cord.box, boxy.vec(cord.box).addWithAngle(cord.angle, cord.length));
-        if (cord.box.y > boxy.view.height + 3) {
-            boxy.end("GAME OVER", {
-                color: boxy.Color.Red
-            });
+        if (cord.box.y > boxy.height + 3) {
+            boxy.end();
         }
     }
 
@@ -63,7 +76,7 @@ boxy.onUpdate(() => {
             nextBox = b;
         }
         b.y += scr;
-        return b.y > boxy.view.height + 3;
+        return b.y > boxy.height + 3;
     });
 
     if (nextBox != null) {
@@ -78,6 +91,4 @@ boxy.onUpdate(() => {
     }
 });
 
-boxy.start("BOX CLIMB", {
-    color: boxy.Color.DarkBlue
-});
+boxy.start(opts);
