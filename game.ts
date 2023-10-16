@@ -11,15 +11,23 @@ namespace boxy {
     export let score = 0;
 
     export let _gameOverText: string = null;
+    export let _gameOverOpts: draw.TextOptions = null;
     export let _gameTitleText: string = null;
+    export let _gameTitleOpts: draw.TextOptions = null;
 
-    export function end(gameOverText: string = null) {
+    export function end(gameOverText: string = null, opts?: draw.TextOptions) {
         _gameOverText = gameOverText || "GAME OVER";
+        _gameOverOpts = opts || {};
+        _gameOverOpts.alignment = _gameTitleOpts.alignment || draw.TextAlignment.Center;
+        _gameOverOpts.scale = _gameTitleOpts.scale || boxy.vec(2, 2);
         _gotoGameOver();
     }
 
-    export function start(gameTitleText: string = null) {
+    export function start(gameTitleText: string = null, opts?: draw.TextOptions) {
         _gameTitleText = gameTitleText;
+        _gameTitleOpts = opts || {};
+        _gameTitleOpts.alignment = _gameTitleOpts.alignment || draw.TextAlignment.Center;
+        _gameTitleOpts.scale = _gameTitleOpts.scale || boxy.vec(2, 2);
         if (_gameTitleText) {
             _gotoTitle();
         } else {
@@ -53,31 +61,30 @@ namespace boxy.game {
 
     function drawTitle() {
         if (_gameTitleText) {
-            draw.text(_gameTitleText, view.width / 2, view.height / 4, {
+            draw.text(_gameTitleText, view.width / 2, view.height / 4, _gameTitleOpts);
+        }
+        if (tick % 80 < 40) {
+            draw.text("press any key", view.width / 2, 5 * view.height / 6, {
                 alignment: draw.TextAlignment.Center,
-                scale: boxy.vec(2, 2)
+                scale: boxy.vec(1.5, 1.5)
             });
         }
     }
 
     function drawGameOver() {
         if (_gameOverText) {
-            draw.text(_gameOverText, view.width / 2, view.height / 4, {
+            draw.text(_gameOverText, view.width / 2, view.height / 4, _gameOverOpts);
+        }
+        if (tick % 80 < 40) {
+            draw.text("press any key", view.width / 2, 5 * view.height / 6, {
                 alignment: draw.TextAlignment.Center,
-                scale: boxy.vec(2, 2)
+                scale: boxy.vec(1.5, 1.5)
             });
         }
     }
 
     export function _update() {
         difficulty = tick / 3600 + 1;
-
-        if (state === GameState.Title) {
-            drawTitle();
-        }
-        if (state == GameState.GameOver) {
-            drawGameOver();
-        }
 
         if (state === GameState.Title && _input.justPressed) {
             _gotoGameplay();
@@ -91,6 +98,13 @@ namespace boxy.game {
         }
 
         ++tick;
+
+        if (state === GameState.Title) {
+            drawTitle();
+        }
+        if (state == GameState.GameOver) {
+            drawGameOver();
+        }
 
         collision.clear();
     }

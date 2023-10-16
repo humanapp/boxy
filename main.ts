@@ -20,7 +20,6 @@ namespace boxy {
 
 /* BOX CLIMB */
 
-/*
 interface Cord { angle: number, length: number, box: boxy.Vec };
 
 let boxes: boxy.Vec[];
@@ -38,13 +37,6 @@ boxy.onUpdate(() => {
         cord = { angle: 0, length: cordLength, box: boxes[0] };
     }
 
-    if (boxy.state === boxy.GameState.Title) {
-        boxy.view.setBackgroundColor(boxy.Color.Pink);
-    }
-    if (boxy.state === boxy.GameState.GameOver) {
-        boxy.view.setBackgroundColor(boxy.Color.LightBlue);
-    }
-
     let scr = boxy.difficulty * 0.08;
 
     if (boxy.state === boxy.GameState.Playing) {
@@ -59,7 +51,9 @@ boxy.onUpdate(() => {
         cord.angle += boxy.difficulty * 0.05;
         boxy.draw.line(cord.box, boxy.vec(cord.box).addWithAngle(cord.angle, cord.length));
         if (cord.box.y > boxy.view.height + 3) {
-            boxy.end();
+            boxy.end("GAME OVER", {
+                color: boxy.Color.Red
+            });
         }
     }
 
@@ -84,5 +78,6 @@ boxy.onUpdate(() => {
     }
 });
 
-boxy.start("BOX CLIMB");
-*/
+boxy.start("BOX CLIMB", {
+    color: boxy.Color.DarkBlue
+});

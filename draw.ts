@@ -193,7 +193,7 @@ namespace boxy.draw {
         Right
     }
 
-    interface TextOptions {
+    export interface TextOptions {
         color?: Color;
         backgroundColor?: Color;
         collidable?: boolean;
@@ -244,9 +244,16 @@ namespace boxy.draw {
                     for (let w = 0; w < font6.charWidth; ++w) {
                         const index = w + h * (font6.charHeight + 1);
                         const elem = glyph.charAt(index);
-                        if (elem !== '.') {
+                        if (elem === '#') {
+                            view.pushCurrentColor(opts.color);
                             const x = pos.x + w * opts.scale.x;
                             addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
+                            view.popCurrentColor();
+                        } else {
+                            view.pushCurrentColor(opts.backgroundColor);
+                            const x = pos.x + w * opts.scale.x;
+                            addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
+                            view.popCurrentColor();
                         }
                     }
                 }
