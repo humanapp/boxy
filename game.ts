@@ -18,8 +18,8 @@ namespace boxy {
     export function end(gameOverText: string = null, opts?: draw.TextOptions) {
         _gameOverText = gameOverText || "GAME OVER";
         _gameOverOpts = opts || {};
-        _gameOverOpts.alignment = _gameTitleOpts.alignment || draw.TextAlignment.Center;
-        _gameOverOpts.scale = _gameTitleOpts.scale || boxy.vec(2, 2);
+        _gameOverOpts.alignment = _gameOverOpts.alignment || draw.TextAlignment.Center;
+        _gameOverOpts.scale = _gameOverOpts.scale || boxy.vec(2, 2);
         _gotoGameOver();
     }
 
@@ -66,7 +66,9 @@ namespace boxy.game {
         if (tick % 80 < 40) {
             draw.text("press any key", view.width / 2, 5 * view.height / 6, {
                 alignment: draw.TextAlignment.Center,
-                scale: boxy.vec(1.5, 1.5)
+                scale: boxy.vec(1.5, 1.5),
+                color: _gameTitleOpts.color,
+                backgroundColor: _gameTitleOpts.backgroundColor
             });
         }
     }
@@ -78,7 +80,9 @@ namespace boxy.game {
         if (tick % 80 < 40) {
             draw.text("press any key", view.width / 2, 5 * view.height / 6, {
                 alignment: draw.TextAlignment.Center,
-                scale: boxy.vec(1.5, 1.5)
+                scale: boxy.vec(1.5, 1.5),
+                color: _gameOverOpts.color,
+                backgroundColor: _gameOverOpts.backgroundColor
             });
         }
     }
@@ -90,7 +94,7 @@ namespace boxy.game {
             _gotoGameplay();
         }
         if (state === GameState.GameOver && _input.justPressed) {
-            start(_gameTitleText);
+            start(_gameTitleText, _gameTitleOpts);
         }
 
         if (_updateHandler) {
