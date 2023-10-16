@@ -11,10 +11,10 @@ namespace boxy.draw {
     export function rect(
         x: number | VecLike,
         y: number | VecLike,
-        width?: number | VecLike,
-        height?: number
+        width: number | VecLike = 6,
+        height: number = 6
     ): Collision {
-        return drawRect(false, false, x, y, width, height);
+        return drawRect(false, false, true, x, y, width, height);
     }
 
     /**
@@ -28,10 +28,10 @@ namespace boxy.draw {
     export function box(
         x: number | VecLike,
         y: number | VecLike,
-        width?: number | VecLike,
-        height?: number
+        width: number | VecLike = 6,
+        height: number = 6
     ): Collision {
-        return drawRect(true, true, x, y, width, height);
+        return drawRect(true, true, true, x, y, width, height);
     }
 
     /**
@@ -62,7 +62,7 @@ namespace boxy.draw {
         }
         const l = new Vec(length).rotate(rotate);
         const p = new Vec(x - l.x * centerPosRatio, y - l.y * centerPosRatio);
-        return drawLine(p, l, thickness);
+        return drawLine(p, l, thickness, true);
     }
 
     /**
@@ -115,7 +115,7 @@ namespace boxy.draw {
                 }
             }
         }
-        return drawLine(p, p2.sub(p), thickness);
+        return drawLine(p, p2.sub(p), thickness, true);
     }
 
     /**
@@ -174,24 +174,94 @@ namespace boxy.draw {
         let p1 = new Vec(radius).rotate(a).add(centerPos);
         let p2 = new Vec();
         let o = new Vec();
-        let collision: Collision = { rect: {} };
+        let collision: Collision = boxy.collision.emptyCollision();
         for (let i = 0; i < lc; i++) {
             a += ai;
             p2.set(radius).rotate(a).add(centerPos);
             o.set(p2).sub(p1);
             const c = drawLine(p1, o, thickness, true);
-            collision = {
-                rect: merge(collision.rect, c.rect, AllColors)
-            };
+            collision = boxy.collision.mergeCollisions(collision, c);
             p1.set(p2);
         }
         boxy.collision.importHitboxes();
         return collision;
     }
 
+    export enum TextAlignment {
+        Left,
+        Center,
+        Right
+    }
+
+    interface TextOptions {
+        color?: Color;
+        backgroundColor?: Color;
+        collidable?: boolean;
+        scale?: Vec;
+        alignment?: TextAlignment;
+    }
+
+    export function text(str: string, x: number | VecLike, y: number, opts?: TextOptions): Collision {
+        let collision = boxy.collision.emptyCollision();
+
+        opts = opts || {};
+        opts.color = opts.color != null ? opts.color : view.getCurrentColor();
+        opts.backgroundColor = opts.backgroundColor || Color.Transparent;
+        opts.collidable = false;
+        opts.scale = opts.scale || vec(1, 1);
+        opts.alignment = opts.alignment || TextAlignment.Left;
+
+        const pos = vec(x, y);
+        str.split('\n').forEach(line => {
+            const c = _text(line, pos, opts);
+            collision = boxy.collision.mergeCollisions(collision, c);
+            pos.y += (font6.charHeight + 1) * opts.scale.y;
+        });
+
+        return collision;
+    }
+
+    function _text(line: string, pos: Vec, opts: TextOptions): Collision {
+        const width = line.length * font6.charWidth * opts.scale.x;
+
+        switch (opts.alignment) {
+            case TextAlignment.Center: {
+                pos.x -= width / 2;
+                break;
+            }
+            case TextAlignment.Right: {
+                pos.x -= width;
+                break;
+            }
+        }
+
+        for (let i = 0; i < line.length; ++i) {
+            const char = line.charCodeAt(i);
+            const glyph = font6.getGlyph(char);
+            if (glyph) {
+                for (let h = 0; h < font6.charHeight; ++h) {
+                    const y = pos.y + h * opts.scale.y;
+                    for (let w = 0; w < font6.charWidth; ++w) {
+                        const index = w + h * (font6.charHeight + 1);
+                        const elem = glyph.charAt(index);
+                        if (elem !== '.') {
+                            const x = pos.x + w * opts.scale.x;
+                            addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
+                        }
+                    }
+                }
+            }
+            pos.x += font6.charWidth * opts.scale.x;            
+        }
+
+        // TODO: Support collision with chars
+        return collision.emptyCollision();
+    }
+
     function drawRect(
         isAlignCenter: boolean,
         fill: boolean,
+        collidable: boolean,
         x: number | VecLike,
         y: number | VecLike,
         width?: number | VecLike,
@@ -201,12 +271,12 @@ namespace boxy.draw {
             if (typeof y === "number") {
                 if (typeof width === "number") {
                     if (height == null) {
-                        return addRect(isAlignCenter, fill, x, y, width, width);
+                        return addRect(isAlignCenter, fill, collidable, x, y, width, width);
                     } else {
-                        return addRect(isAlignCenter, fill, x, y, width, height);
+                        return addRect(isAlignCenter, fill, collidable, x, y, width, height);
                     }
                 } else {
-                    return addRect(isAlignCenter, fill, x, y, width.x, width.y);
+                    return addRect(isAlignCenter, fill, collidable, x, y, width.x, width.y);
                 }
             } else {
                 throw "invalid params";
@@ -214,14 +284,14 @@ namespace boxy.draw {
         } else {
             if (typeof y === "number") {
                 if (width == null) {
-                    return addRect(isAlignCenter, fill, x.x, x.y, y, y);
+                    return addRect(isAlignCenter, fill, collidable, x.x, x.y, y, y);
                 } else if (typeof width === "number") {
-                    return addRect(isAlignCenter, fill, x.x, x.y, y, width);
+                    return addRect(isAlignCenter, fill, collidable, x.x, x.y, y, width);
                 } else {
                     throw "invalid params";
                 }
             } else {
-                return addRect(isAlignCenter, fill, x.x, x.y, y.x, y.y);
+                return addRect(isAlignCenter, fill, collidable, x.x, x.y, y.x, y.y);
             }
         }
     }
@@ -230,6 +300,7 @@ namespace boxy.draw {
         p: Vec,
         l: Vec,
         thickness: number,
+        collidable: boolean,
         isAddingToTmp = false
     ): Collision {
         if (view.getCurrentColor() !== Color.Transparent) {
@@ -240,12 +311,12 @@ namespace boxy.draw {
         const ly = Math.abs(l.y);
         const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
         l.div(rn - 1);
-        let collision: Collision = { rect: {} };
+        let collision: Collision = boxy.collision.emptyCollision();
         for (let i = 0; i < rn; i++) {
-            const c = addRect(true, true, p.x, p.y, thickness, thickness, true);
-            collision = {
-                rect: merge(collision.rect, c.rect, AllColors)
-            };
+            const c = addRect(true, true, collidable, p.x, p.y, thickness, thickness, true);
+            if (collidable) {
+                collision = boxy.collision.mergeCollisions(collision, c);
+            }
             p.add(l);
         }
         if (!isAddingToTmp) {
@@ -257,6 +328,7 @@ namespace boxy.draw {
     function addRect(
         isAlignCenter: boolean,
         fill: boolean,
+        collidable: boolean,
         x: number,
         y: number,
         width: number,
@@ -275,7 +347,7 @@ namespace boxy.draw {
             : { x: Math.floor(x), y: Math.floor(y) };
         const size = { x: Math.trunc(width), y: Math.trunc(height) };
         if (size.x === 0 || size.y === 0) {
-            return { rect: {} };
+            return boxy.collision.emptyCollision();
         }
         if (size.x < 0) {
             pos.x += size.x;
@@ -285,8 +357,10 @@ namespace boxy.draw {
             pos.y += size.y;
             size.y *= -1;
         }
-        const box: HitBox = { pos, size, collision: { rect: {} } };
-        box.collision.rect[view.getCurrentColor()] = true;
+        const box: HitBox = { pos, size, collision: boxy.collision.emptyCollision() };
+        if (collidable) {
+            box.collision.collidingWith.rect[view.getCurrentColor()] = true;
+        }
         const collision = boxy.collision.checkHitboxes(box);
         if (view.getCurrentColor() !== Color.Transparent) {
             isAddingToTmp ? boxy.collision.queueHitbox(box) : boxy.collision.addHitbox(box);

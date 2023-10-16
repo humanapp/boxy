@@ -20,7 +20,8 @@
         "view.ts",
         "input.ts",
         "game.ts",
-        "render.ts"
+        "render.ts",
+        "font.ts"
     ],
     "testFiles": [
         "test.ts"
