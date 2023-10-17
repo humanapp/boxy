@@ -32,7 +32,8 @@ const opts: boxy.GameOptions = {
     gameOverText: "GAME OVER",
     gameOverOpts: {
         color: boxy.Color.Red
-    }
+    },
+    scoreColor: boxy.Color.DarkBlue
 }
 
 interface Cord { angle: number, length: number, box: boxy.Vec };
@@ -74,6 +75,10 @@ boxy.onUpdate(() => {
     boxy.remove(boxes, b => {
         if (boxy.draw.box(b, 6).collidingWith.rect[boxy.Color.Black] && b !== cord.box) {
             nextBox = b;
+            const score = cord.box.y - b.y;
+            if (score > 0) {
+                boxy.addScore(score, b);
+            }
         }
         b.y += scr;
         return b.y > boxy.height + 3;

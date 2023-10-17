@@ -21,7 +21,8 @@
         "input.ts",
         "game.ts",
         "render.ts",
-        "font.ts"
+        "font.ts",
+        "score.ts"
     ],
     "testFiles": [
         "test.ts"

@@ -23,6 +23,8 @@ namespace boxy {
         gameOverPos?: Vec;
         wantDifficulty?: boolean; // default: true
         wantScore?: boolean; // default: true
+        scoreColor?: Color;
+        scoreScale?: Vec;
     }
 
     export let _gameOpts: GameOptions;
@@ -46,6 +48,8 @@ namespace boxy {
         _gameOpts.titleBlinkTextOpts.alignment = _gameOpts.titleBlinkTextOpts.alignment || draw.TextAlignment.Center;
         _gameOpts.titleBlinkTextOpts.scale = _gameOpts.titleBlinkTextOpts.scale || boxy.vec(1.5, 1.5);
         _gameOpts.titleBlinkPos = _gameOpts.titleBlinkPos || vec(width / 2, 5 * height / 6);
+        _gameOpts.scoreColor = _gameOpts.scoreColor || Color.Black;
+        _gameOpts.scoreScale = _gameOpts.scoreScale || vec(1.5, 1.5)
 
         if (_gameOpts.wantTitleState) {
             _gotoTitle();
@@ -57,12 +61,14 @@ namespace boxy {
     export function _gotoTitle() {
         tick = 0;
         score = 0;
+        _activeScores = [];
         state = GameState.Title;
     }
 
     export function _gotoGameplay() {
         tick = 0;
         score = 0;
+        _activeScores = [];
         state = GameState.Playing;
     }
 
@@ -90,7 +96,8 @@ namespace boxy.game {
     function drawGameOver() {
         if (_gameOpts.gameOverText) {
             draw.text(_gameOpts.gameOverText, _gameOpts.gameOverPos.x, _gameOpts.gameOverPos.y, _gameOpts.gameOverOpts);
-        }    }
+        }
+    }
 
     export function _update() {
         difficulty = tick / 3600 + 1;
@@ -105,6 +112,8 @@ namespace boxy.game {
         if (_updateHandler) {
             _updateHandler();
         }
+
+        scores._update();
 
         ++tick;
 
