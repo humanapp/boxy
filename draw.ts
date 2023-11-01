@@ -213,7 +213,6 @@ namespace boxy.draw {
         opts.font = opts.font || image.getFontForText(str);
         opts.alignment = opts.alignment || TextAlignment.Left;
 
-
         pushCurrentColor(opts.color);
 
         const pos = vec(x, y);
@@ -228,6 +227,7 @@ namespace boxy.draw {
         return collision;
     }
 
+    // copied from pxt-common-packages/libs/screen/screen.ts:imagePrint (with local changes)
     function _text(line: string, pos: Vec, opts: TextOptions): Collision {
         let x = pos.x;
         let y = pos.y;
