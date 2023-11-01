@@ -1,5 +1,5 @@
 {
-    "name": "boxy #2",
+    "name": "boxy",
     "description": "",
     "dependencies": {
         "device": "*"
