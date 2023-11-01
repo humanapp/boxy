@@ -15,8 +15,8 @@ namespace boxy {
         } else {
             pos.set(x);
         }
-        pos.x -= (str.length * font6.charWidth * 2) / 2;
-        pos.y -= font6.charHeight * 2 / 2;
+        pos.x -= (str.length * _gameOpts.scoreOpts.font.charWidth * 2) / 2;
+        pos.y -= _gameOpts.scoreOpts.font.charHeight * 2 / 2;
         _activeScores.push({
             id: ++scoreId,
             str,
@@ -31,10 +31,7 @@ namespace boxy.scores {
     export function _update() {
         pushCurrentColor(Color.Black);
         remove(_activeScores, (s) => {
-            draw.text(s.str, s.pos.x, s.pos.y, {
-                scale: _gameOpts.scoreScale,
-                color: _gameOpts.scoreColor
-            });
+            draw.text(s.str, s.pos.x, s.pos.y, _gameOpts.scoreOpts);
             s.pos.y += s.vy;
             s.vy *= 0.9;
             return s.deathTick <= tick;

@@ -33,7 +33,9 @@ const opts: boxy.GameOptions = {
     gameOverOpts: {
         color: boxy.Color.Red
     },
-    scoreColor: boxy.Color.DarkBlue
+    scoreOpts: {
+        color: boxy.Color.DarkBlue
+    }
 }
 
 interface Cord { angle: number, length: number, box: boxy.Vec };

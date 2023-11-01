@@ -1,5 +1,5 @@
 {
-    "name": "boxy",
+    "name": "boxy #2",
     "description": "",
     "dependencies": {
         "device": "*"
@@ -21,7 +21,6 @@
         "input.ts",
         "game.ts",
         "render.ts",
-        "font.ts",
         "score.ts"
     ],
     "testFiles": [

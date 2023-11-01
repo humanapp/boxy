@@ -23,8 +23,7 @@ namespace boxy {
         gameOverPos?: Vec;
         wantDifficulty?: boolean; // default: true
         wantScore?: boolean; // default: true
-        scoreColor?: Color;
-        scoreScale?: Vec;
+        scoreOpts?: draw.TextOptions;
     }
 
     export let _gameOpts: GameOptions;
@@ -38,18 +37,19 @@ namespace boxy {
         _gameOpts.wantTitleState = gameOpts.wantTitleState != null || !!gameOpts.titleText;
         _gameOpts.gameOverOpts = _gameOpts.gameOverOpts || {};
         _gameOpts.gameOverOpts.alignment = _gameOpts.gameOverOpts.alignment || draw.TextAlignment.Center;
-        _gameOpts.gameOverOpts.scale = _gameOpts.gameOverOpts.scale || boxy.vec(2, 2);
+        _gameOpts.gameOverOpts.font = _gameOpts.gameOverOpts.font || image.scaledFont(image.font8, 2);
         _gameOpts.gameOverPos = _gameOpts.gameOverPos || vec(width / 2 - 5, height / 2 - 5);
         _gameOpts.titleTextOpts = _gameOpts.titleTextOpts || {};
         _gameOpts.titleTextOpts.alignment = _gameOpts.titleTextOpts.alignment || draw.TextAlignment.Center;
-        _gameOpts.titleTextOpts.scale = _gameOpts.titleTextOpts.scale || boxy.vec(2, 2);
+        _gameOpts.titleTextOpts.font = _gameOpts.titleTextOpts.font || image.scaledFont(image.font8, 2);
         _gameOpts.titlePos = _gameOpts.titlePos || vec(width / 2, height / 4);
         _gameOpts.titleBlinkTextOpts = _gameOpts.titleBlinkTextOpts || {};
         _gameOpts.titleBlinkTextOpts.alignment = _gameOpts.titleBlinkTextOpts.alignment || draw.TextAlignment.Center;
-        _gameOpts.titleBlinkTextOpts.scale = _gameOpts.titleBlinkTextOpts.scale || boxy.vec(1.5, 1.5);
+        _gameOpts.titleBlinkTextOpts.font = _gameOpts.titleBlinkTextOpts.font || image.font8;
         _gameOpts.titleBlinkPos = _gameOpts.titleBlinkPos || vec(width / 2, 5 * height / 6);
-        _gameOpts.scoreColor = _gameOpts.scoreColor || Color.Black;
-        _gameOpts.scoreScale = _gameOpts.scoreScale || vec(1.5, 1.5)
+        _gameOpts.scoreOpts = _gameOpts.scoreOpts || {};
+        _gameOpts.scoreOpts.alignment = _gameOpts.scoreOpts.alignment || draw.TextAlignment.Center;
+        _gameOpts.scoreOpts.font = _gameOpts.scoreOpts.font || image.font5;
 
         if (_gameOpts.wantTitleState) {
             _gotoTitle();

@@ -197,7 +197,7 @@ namespace boxy.draw {
         color?: Color;
         backgroundColor?: Color;
         collidable?: boolean;
-        scale?: Vec;
+        font?: image.Font;
         alignment?: TextAlignment;
     }
 
@@ -208,57 +208,121 @@ namespace boxy.draw {
         opts.color = opts.color != null ? opts.color : getCurrentColor();
         opts.backgroundColor = opts.backgroundColor || Color.Transparent;
         opts.collidable = false;
-        opts.scale = opts.scale || vec(1, 1);
+        opts.font = opts.font || image.getFontForText(str);
         opts.alignment = opts.alignment || TextAlignment.Left;
+
+
+        pushCurrentColor(opts.color);
 
         const pos = vec(x, y);
         str.split('\n').forEach(line => {
             const c = _text(line, pos, opts);
             collision = boxy.collision.mergeCollisions(collision, c);
-            pos.y += (font6.charHeight + 1) * opts.scale.y;
+            pos.y += (opts.font.charHeight + 1) * opts.font.multiplier;
         });
+
+        popCurrentColor();
 
         return collision;
     }
 
     function _text(line: string, pos: Vec, opts: TextOptions): Collision {
-        const width = line.length * font6.charWidth * opts.scale.x;
+        let x = pos.x;
+        let y = pos.y;
+        let font = opts.font;
+        if (!font)
+            font = image.getFontForText(line)
+        let x0 = x
+        let cp = 0
+        let mult = font.multiplier ? font.multiplier : 1
+        let dataW = Math.idiv(font.charWidth, mult)
+        let dataH = Math.idiv(font.charHeight, mult)
+        let byteHeight = (dataH + 7) >> 3
+        let charSize = byteHeight * dataW
+        let dataSize = 2 + charSize
+        let fontdata = font.data
+        let lastchar = Math.idiv(fontdata.length, dataSize) - 1
+        let width = line.length * opts.font.charWidth;
 
         switch (opts.alignment) {
             case TextAlignment.Center: {
-                pos.x -= width / 2;
+                x -= width / 2;
                 break;
             }
             case TextAlignment.Right: {
-                pos.x -= width;
+                x -= width;
                 break;
             }
         }
 
-        for (let i = 0; i < line.length; ++i) {
-            const char = line.charCodeAt(i);
-            const glyph = font6.getGlyph(char);
-            if (glyph) {
-                for (let h = 0; h < font6.charHeight; ++h) {
-                    const y = pos.y + h * opts.scale.y;
-                    for (let w = 0; w < font6.charWidth; ++w) {
-                        const index = w + h * (font6.charHeight + 1);
-                        const elem = glyph.charAt(index);
-                        if (elem === '#') {
-                            pushCurrentColor(opts.color);
-                            const x = pos.x + w * opts.scale.x;
-                            addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
-                            popCurrentColor();
-                        } else {
-                            pushCurrentColor(opts.backgroundColor);
-                            const x = pos.x + w * opts.scale.x;
-                            addRect(false, true, false, x, y, opts.scale.x, opts.scale.y);
-                            popCurrentColor();
-                        }
+        while (cp < line.length) {
+            let ch = line.charCodeAt(cp++)
+            if (ch == 10) {
+                y += font.charHeight + 2
+                x = x0
+            }
+
+            if (ch < 32)
+                continue // skip control chars
+
+            let l = 0
+            let r = lastchar
+            let off = 0 // this should be a space (0x0020)
+            let guess = (ch - 32) * dataSize
+            if (fontdata.getNumber(NumberFormat.UInt16LE, guess) == ch)
+                off = guess
+            else {
+                while (l <= r) {
+                    let m = l + ((r - l) >> 1);
+                    let v = fontdata.getNumber(NumberFormat.UInt16LE, m * dataSize)
+                    if (v == ch) {
+                        off = m * dataSize
+                        break
                     }
+                    if (v < ch)
+                        l = m + 1
+                    else
+                        r = m - 1
                 }
             }
-            pos.x += font6.charWidth * opts.scale.x;            
+
+            if (mult == 1) {
+                let imgBuf: Buffer
+                imgBuf = control.createBuffer(8 + charSize)
+                imgBuf[0] = 0x87
+                imgBuf[1] = 1
+                imgBuf[2] = dataW
+                imgBuf[4] = dataH
+                imgBuf.write(8, fontdata.slice(off + 2, charSize))
+                render.icon(x, y, imgBuf)
+                x += font.charWidth
+            } else {
+                off += 2
+                for (let i = 0; i < dataW; ++i) {
+                    let j = 0
+                    let mask = 0x01
+                    let c = fontdata[off++]
+                    while (j < dataH) {
+                        if (mask == 0x100) {
+                            c = fontdata[off++]
+                            mask = 0x01
+                        }
+                        let n = 0
+                        while (c & mask) {
+                            n++
+                            mask <<= 1
+                        }
+                        if (n) {
+                            addRect(false, true, false, x, y + j * mult, mult, mult * n)
+                            j += n
+                        } else {
+                            mask <<= 1
+                            j++
+                        }
+                    }
+                    x += mult
+                }
+            }
         }
 
         // TODO: Support collision with chars
