@@ -100,6 +100,8 @@ namespace boxy.game {
     }
 
     export function _update() {
+        if (!_gameOpts) return;
+
         difficulty = tick / 3600 + 1;
 
         if (state === GameState.Title && _input.justPressed) {
