@@ -1,3 +1,19 @@
+namespace boxy {
+    export enum TextAlignment {
+        Left,
+        Center,
+        Right
+    }
+
+    export interface TextOptions {
+        color?: Color;
+        backgroundColor?: Color;
+        collidable?: boolean;
+        font?: image.Font;
+        alignment?: TextAlignment;
+    }
+}
+
 namespace boxy.draw {
 
     /**
@@ -185,20 +201,6 @@ namespace boxy.draw {
         }
         boxy.collision.importHitboxes();
         return collision;
-    }
-
-    export enum TextAlignment {
-        Left,
-        Center,
-        Right
-    }
-
-    export interface TextOptions {
-        color?: Color;
-        backgroundColor?: Color;
-        collidable?: boolean;
-        font?: image.Font;
-        alignment?: TextAlignment;
     }
 
     export function text(str: string, x: number | VecLike, y: number, opts?: TextOptions): Collision {

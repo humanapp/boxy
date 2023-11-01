@@ -13,17 +13,17 @@ namespace boxy {
     export interface GameOptions {
         wantTitleState?: boolean; // default: false
         titleText?: string;
-        titleTextOpts?: draw.TextOptions;
+        titleTextOpts?: TextOptions;
         titlePos?: Vec;
         titleBlinkText?: string;
-        titleBlinkTextOpts?: draw.TextOptions;
+        titleBlinkTextOpts?: TextOptions;
         titleBlinkPos?: Vec;
         gameOverText?: string;
-        gameOverOpts?: draw.TextOptions;
+        gameOverOpts?: TextOptions;
         gameOverPos?: Vec;
         wantDifficulty?: boolean; // default: true
         wantScore?: boolean; // default: true
-        scoreOpts?: draw.TextOptions;
+        scoreOpts?: TextOptions;
     }
 
     export let _gameOpts: GameOptions;
@@ -36,19 +36,19 @@ namespace boxy {
         _gameOpts = gameOpts = gameOpts || {};
         _gameOpts.wantTitleState = gameOpts.wantTitleState != null || !!gameOpts.titleText;
         _gameOpts.gameOverOpts = _gameOpts.gameOverOpts || {};
-        _gameOpts.gameOverOpts.alignment = _gameOpts.gameOverOpts.alignment || draw.TextAlignment.Center;
+        _gameOpts.gameOverOpts.alignment = _gameOpts.gameOverOpts.alignment || TextAlignment.Center;
         _gameOpts.gameOverOpts.font = _gameOpts.gameOverOpts.font || image.scaledFont(image.font8, 2);
         _gameOpts.gameOverPos = _gameOpts.gameOverPos || vec(width / 2 - 5, height / 2 - 5);
         _gameOpts.titleTextOpts = _gameOpts.titleTextOpts || {};
-        _gameOpts.titleTextOpts.alignment = _gameOpts.titleTextOpts.alignment || draw.TextAlignment.Center;
+        _gameOpts.titleTextOpts.alignment = _gameOpts.titleTextOpts.alignment || TextAlignment.Center;
         _gameOpts.titleTextOpts.font = _gameOpts.titleTextOpts.font || image.scaledFont(image.font8, 2);
         _gameOpts.titlePos = _gameOpts.titlePos || vec(width / 2, height / 4);
         _gameOpts.titleBlinkTextOpts = _gameOpts.titleBlinkTextOpts || {};
-        _gameOpts.titleBlinkTextOpts.alignment = _gameOpts.titleBlinkTextOpts.alignment || draw.TextAlignment.Center;
+        _gameOpts.titleBlinkTextOpts.alignment = _gameOpts.titleBlinkTextOpts.alignment || TextAlignment.Center;
         _gameOpts.titleBlinkTextOpts.font = _gameOpts.titleBlinkTextOpts.font || image.font8;
         _gameOpts.titleBlinkPos = _gameOpts.titleBlinkPos || vec(width / 2, 5 * height / 6);
         _gameOpts.scoreOpts = _gameOpts.scoreOpts || {};
-        _gameOpts.scoreOpts.alignment = _gameOpts.scoreOpts.alignment || draw.TextAlignment.Center;
+        _gameOpts.scoreOpts.alignment = _gameOpts.scoreOpts.alignment || TextAlignment.Center;
         _gameOpts.scoreOpts.font = _gameOpts.scoreOpts.font || image.font5;
 
         if (_gameOpts.wantTitleState) {
@@ -77,7 +77,7 @@ namespace boxy {
     }
 }
 
-namespace boxy.game {
+namespace boxy._game {
     export let _updateHandler: () => void;
 
     export function setUpdateHandler(handler: () => void) {
@@ -115,7 +115,7 @@ namespace boxy.game {
             _updateHandler();
         }
 
-        scores._update();
+        _scores._update();
 
         ++tick;
 
