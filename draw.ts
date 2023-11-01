@@ -190,21 +190,21 @@ namespace boxy.draw {
         let p1 = new Vec(radius).rotate(a).add(centerPos);
         let p2 = new Vec();
         let o = new Vec();
-        let collision: Collision = boxy.collision.emptyCollision();
+        let collision: Collision = _collision.emptyCollision();
         for (let i = 0; i < lc; i++) {
             a += ai;
             p2.set(radius).rotate(a).add(centerPos);
             o.set(p2).sub(p1);
             const c = drawLine(p1, o, thickness, true);
-            collision = boxy.collision.mergeCollisions(collision, c);
+            collision = _collision.mergeCollisions(collision, c);
             p1.set(p2);
         }
-        boxy.collision.importHitboxes();
+        _collision.importHitboxes();
         return collision;
     }
 
     export function text(str: string, x: number | VecLike, y: number, opts?: TextOptions): Collision {
-        let collision = boxy.collision.emptyCollision();
+        let collision = _collision.emptyCollision();
 
         opts = opts || {};
         opts.color = opts.color != null ? opts.color : getCurrentColor();
@@ -219,7 +219,7 @@ namespace boxy.draw {
         const pos = vec(x, y);
         str.split('\n').forEach(line => {
             const c = _text(line, pos, opts);
-            collision = boxy.collision.mergeCollisions(collision, c);
+            collision = _collision.mergeCollisions(collision, c);
             pos.y += (opts.font.charHeight + 1) * opts.font.multiplier;
         });
 
@@ -296,7 +296,7 @@ namespace boxy.draw {
                 imgBuf[2] = dataW
                 imgBuf[4] = dataH
                 imgBuf.write(8, fontdata.slice(off + 2, charSize))
-                render.icon(x, y, imgBuf)
+                _render.icon(x, y, imgBuf)
                 x += font.charWidth
             } else {
                 off += 2
@@ -327,8 +327,8 @@ namespace boxy.draw {
             }
         }
 
-        // TODO: Support collision with chars
-        return collision.emptyCollision();
+        // TODO: Support collision with text
+        return _collision.emptyCollision();
     }
 
     function drawRect(
@@ -377,23 +377,23 @@ namespace boxy.draw {
         isAddingToTmp = false
     ): Collision {
         if (getCurrentColor() !== Color.Transparent) {
-            render.line(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
+            _render.line(p.x, p.y, p.x + l.x, p.y + l.y, thickness);
         }
         const t = Math.floor(clamp(thickness, 3, 10));
         const lx = Math.abs(l.x);
         const ly = Math.abs(l.y);
         const rn = clamp(Math.ceil(lx > ly ? lx / t : ly / t) + 1, 3, 99);
         l.div(rn - 1);
-        let collision: Collision = boxy.collision.emptyCollision();
+        let collision: Collision = _collision.emptyCollision();
         for (let i = 0; i < rn; i++) {
             const c = addRect(true, true, collidable, p.x, p.y, thickness, thickness, true);
             if (collidable) {
-                collision = boxy.collision.mergeCollisions(collision, c);
+                collision = _collision.mergeCollisions(collision, c);
             }
             p.add(l);
         }
         if (!isAddingToTmp) {
-            boxy.collision.importHitboxes();
+            _collision.importHitboxes();
         }
         return collision;
     }
@@ -410,9 +410,9 @@ namespace boxy.draw {
     ): Collision {
         if (getCurrentColor() !== Color.Transparent) {
             if (isAlignCenter) {
-                render.rect(x - width / 2, y - height / 2, width, height);
+                _render.rect(x - width / 2, y - height / 2, width, height);
             } else {
-                render.rect(x, y, width, height);
+                _render.rect(x, y, width, height);
             }
         }
         let pos = isAlignCenter
@@ -420,7 +420,7 @@ namespace boxy.draw {
             : { x: Math.floor(x), y: Math.floor(y) };
         const size = { x: Math.trunc(width), y: Math.trunc(height) };
         if (size.x === 0 || size.y === 0) {
-            return boxy.collision.emptyCollision();
+            return _collision.emptyCollision();
         }
         if (size.x < 0) {
             pos.x += size.x;
@@ -430,14 +430,14 @@ namespace boxy.draw {
             pos.y += size.y;
             size.y *= -1;
         }
-        const box: HitBox = { pos, size, collision: boxy.collision.emptyCollision() };
+        const box: HitBox = { pos, size, collision: _collision.emptyCollision() };
         if (collidable) {
             box.collision.collidingWith.rect[getCurrentColor()] = true;
         }
-        const collision = boxy.collision.checkHitboxes(box);
+        const collision = _collision.checkHitboxes(box);
         if (getCurrentColor() !== Color.Transparent) {
-            isAddingToTmp ? boxy.collision.queueHitbox(box) : boxy.collision.addHitbox(box);
-            fill ? render.box(pos.x, pos.y, size.x, size.y) : render.rect(pos.x, pos.y, size.x, size.y);
+            isAddingToTmp ? _collision.queueHitbox(box) : _collision.addHitbox(box);
+            fill ? _render.box(pos.x, pos.y, size.x, size.y) : _render.rect(pos.x, pos.y, size.x, size.y);
         }
         return collision;
     }

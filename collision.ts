@@ -13,7 +13,7 @@ namespace boxy {
     }
 }
 
-namespace boxy.collision {
+namespace boxy._collision {
     interface CollisionSet { [color: number /*Color*/]: boolean };
     function emptySet(): CollisionSet {
         return {

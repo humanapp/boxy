@@ -28,10 +28,14 @@ namespace boxy {
 
     export let _gameOpts: GameOptions;
 
+    //% block="end"
+    //% blockid=boxy_end
     export function end() {
         _gotoGameOver();
     }
 
+    //% block="start"
+    //% blockid=boxy_start
     export function start(gameOpts?: GameOptions) {
         _gameOpts = gameOpts = gameOpts || {};
         _gameOpts.wantTitleState = gameOpts.wantTitleState != null || !!gameOpts.titleText;
@@ -126,6 +130,6 @@ namespace boxy._game {
             drawGameOver();
         }
 
-        collision.clear();
+        _collision.clear();
     }
 }
