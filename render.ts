@@ -3,7 +3,8 @@ namespace boxy.render {
     enum DrawCommandType {
         DrawRect,
         DrawBox,
-        DrawLine
+        DrawLine,
+        DrawIcon
     }
 
     interface DrawCommand {
@@ -35,6 +36,12 @@ namespace boxy.render {
         thickness: number;
     }
 
+    interface DrawIconCommand extends DrawCommand {
+        x: number;
+        y: number;
+        buf: Buffer;
+    }
+
     function makeDrawRect(x: number, y: number, width: number, height: number): DrawRectCommand {
         return {
             type: DrawCommandType.DrawRect,
@@ -60,6 +67,14 @@ namespace boxy.render {
         };
     }
 
+    function makeDrawIcon(x: number, y: number, buf: Buffer): DrawIconCommand {
+        return {
+            type: DrawCommandType.DrawIcon,
+            color: getCurrentColor(),
+            x, y, buf
+        };
+    }
+
     export function rect(x: number, y: number, width: number, height: number) {
         commands.push(makeDrawRect(x, y, width, height));
     }
@@ -70,6 +85,10 @@ namespace boxy.render {
 
     export function line(x1: number, y1: number, x2: number, y2: number, thickness: number) {
         commands.push(makeDrawLine(x1, y1, x2, y2, thickness));
+    }
+
+    export function icon(x: number, y: number, buf: Buffer) {
+        commands.push(makeDrawIcon(x, y, buf));
     }
 
     export function _update() {
@@ -90,6 +109,11 @@ namespace boxy.render {
                     _drawLine(_cmd.x1, _cmd.y1, _cmd.x2, _cmd.y2, _cmd.thickness, _cmd.color);
                     break;
                 }
+                case DrawCommandType.DrawIcon: {
+                    const _cmd = cmd as DrawIconCommand;
+                    _drawIcon(_cmd.x, _cmd.y, _cmd.buf, _cmd.color);
+                    break;
+                }
             }
 
         });
@@ -106,5 +130,9 @@ namespace boxy.render {
 
     function _drawLine(x1: number, y1: number, x2: number, y2: number, thickness: number, color: Color) {
         // TODO
+    }
+
+    function _drawIcon(x: number, y: number, buf: Buffer, color: Color) {
+        screen.drawIcon(buf, x, y, color);
     }
 }

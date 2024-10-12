@@ -1,5 +1,5 @@
 {
-    "name": "boxy",
+    "name": "box climb",
     "description": "",
     "dependencies": {
         "device": "*"
@@ -21,14 +21,13 @@
         "input.ts",
         "game.ts",
         "render.ts",
-        "font.ts",
         "score.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.12.41",
+        "target": "1.12.56",
         "targetId": "arcade"
     },
     "supportedTargets": [
