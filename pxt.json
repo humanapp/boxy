@@ -1,5 +1,5 @@
 {
-    "name": "BOXY",
+    "name": "BOX CLIMB",
     "description": "",
     "dependencies": {
         "device": "*"
@@ -27,7 +27,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.12.41",
+        "target": "1.12.56",
         "targetId": "arcade"
     },
     "supportedTargets": [
