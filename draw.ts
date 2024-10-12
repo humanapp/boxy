@@ -203,6 +203,20 @@ namespace boxy.draw {
         return collision;
     }
 
+    export enum TextAlignment {
+        Left,
+        Center,
+        Right
+    }
+
+    export interface TextOptions {
+        color?: Color;
+        backgroundColor?: Color;
+        collidable?: boolean;
+        font?: image.Font;
+        alignment?: TextAlignment;
+    }
+
     export function text(str: string, x: number | VecLike, y: number, opts?: TextOptions): Collision {
         let collision = _collision.emptyCollision();
 
@@ -218,7 +232,7 @@ namespace boxy.draw {
         const pos = vec(x, y);
         str.split('\n').forEach(line => {
             const c = _text(line, pos, opts);
-            collision = _collision.mergeCollisions(collision, c);
+            collision = boxy.collision.mergeCollisions(collision, c);
             pos.y += (opts.font.charHeight + 1) * opts.font.multiplier;
         });
 
@@ -296,7 +310,7 @@ namespace boxy.draw {
                 imgBuf[2] = dataW
                 imgBuf[4] = dataH
                 imgBuf.write(8, fontdata.slice(off + 2, charSize))
-                _render.icon(x, y, imgBuf)
+                render.icon(x, y, imgBuf)
                 x += font.charWidth
             } else {
                 off += 2
@@ -315,7 +329,7 @@ namespace boxy.draw {
                             mask <<= 1
                         }
                         if (n) {
-                            addRect(false, true, false, x, y + j * mult, mult, mult * n)
+                            screen.fillRect(x, y + j * mult, mult, mult * n, 3)
                             j += n
                         } else {
                             mask <<= 1
