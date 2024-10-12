@@ -13,7 +13,7 @@ namespace boxy {
     }
 }
 
-namespace boxy.collision {
+namespace boxy._collision {
     interface CollisionSet { [color: number /*Color*/]: boolean };
     function emptySet(): CollisionSet {
         return {
@@ -25,7 +25,7 @@ namespace boxy.collision {
             [Color.Yellow]: false,
             [Color.Teal]: false,
             [Color.Green]: false,
-            [Color.DarkBlue]: false,
+            [Color.Blue]: false,
             [Color.LightBlue]: false,
             [Color.Purple]: false,
             [Color.LightPurple]: false,
@@ -45,7 +45,7 @@ namespace boxy.collision {
         dst[Color.Yellow] = dst[Color.Yellow] || src[Color.Yellow];
         dst[Color.Teal] = dst[Color.Teal] || src[Color.Teal];
         dst[Color.Green] = dst[Color.Green] || src[Color.Green];
-        dst[Color.DarkBlue] = dst[Color.DarkBlue] || src[Color.DarkBlue];
+        dst[Color.Blue] = dst[Color.Blue] || src[Color.Blue];
         dst[Color.LightBlue] = dst[Color.LightBlue] || src[Color.LightBlue];
         dst[Color.Purple] = dst[Color.Purple] || src[Color.Purple];
         dst[Color.LightPurple] = dst[Color.LightPurple] || src[Color.LightPurple];

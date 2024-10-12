@@ -1,4 +1,4 @@
-namespace boxy.render {
+namespace boxy._render {
 
     enum DrawCommandType {
         DrawRect,

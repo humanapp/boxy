@@ -13,13 +13,13 @@ namespace boxy {
     export interface GameOptions {
         wantTitleState?: boolean; // default: false
         titleText?: string;
-        titleTextOpts?: draw.TextOptions;
+        titleTextOpts?: TextOptions;
         titlePos?: Vec;
         titleBlinkText?: string;
-        titleBlinkTextOpts?: draw.TextOptions;
+        titleBlinkTextOpts?: TextOptions;
         titleBlinkPos?: Vec;
         gameOverText?: string;
-        gameOverOpts?: draw.TextOptions;
+        gameOverOpts?: TextOptions;
         gameOverPos?: Vec;
         wantDifficulty?: boolean; // default: true
         wantScore?: boolean; // default: true
@@ -28,10 +28,14 @@ namespace boxy {
 
     export let _gameOpts: GameOptions;
 
+    //% block="end"
+    //% blockid=boxy_end
     export function end() {
         _gotoGameOver();
     }
 
+    //% block="start"
+    //% blockid=boxy_start
     export function start(gameOpts?: GameOptions) {
         _gameOpts = gameOpts = gameOpts || {};
         _gameOpts.wantTitleState = gameOpts.wantTitleState != null || !!gameOpts.titleText;
@@ -77,7 +81,7 @@ namespace boxy {
     }
 }
 
-namespace boxy.game {
+namespace boxy._game {
     export let _updateHandler: () => void;
 
     export function setUpdateHandler(handler: () => void) {
@@ -100,6 +104,8 @@ namespace boxy.game {
     }
 
     export function _update() {
+        if (!_gameOpts) return;
+
         difficulty = tick / 3600 + 1;
 
         if (state === GameState.Title && _input.justPressed) {
@@ -113,7 +119,7 @@ namespace boxy.game {
             _updateHandler();
         }
 
-        scores._update();
+        _scores._update();
 
         ++tick;
 
@@ -124,6 +130,6 @@ namespace boxy.game {
             drawGameOver();
         }
 
-        collision.clear();
+        _collision.clear();
     }
 }

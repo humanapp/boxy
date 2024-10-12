@@ -27,7 +27,7 @@ namespace boxy {
     }
 }
 
-namespace boxy.scores {
+namespace boxy._scores {
     export function _update() {
         pushCurrentColor(Color.Black);
         remove(_activeScores, (s) => {

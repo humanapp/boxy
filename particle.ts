@@ -49,7 +49,7 @@ namespace boxy {
             p.pos.add(p.vel);
             p.vel.mul(0.98);
             setCurrentColor(p.color);
-            render.rect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
+            _render.rect(Math.floor(p.pos.x), Math.floor(p.pos.y), 1, 1);
             return true;
         });
         setCurrentColor(color);
